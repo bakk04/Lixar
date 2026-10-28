@@ -50,3 +50,6 @@ models/checkpoints/*.pt
 models/checkpoints/*.pth
 models/checkpoints/*.onnx
 !models/checkpoints/.gitkeep
+
+# [AI Model Evaluation Metrics & Artifacts]
+metrics/
