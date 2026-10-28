@@ -1,0 +1,126 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+:root {
+  /* Orion Light Theme Colors */
+  --bg-canvas: #F4F5FB;
+  --bg-card: #FFFFFF;
+  --bg-card-subtle: #F9FAFD;
+  --bg-input: #EFF1F7;
+  
+  /* Text */
+  --text-main: #1D2138;
+  --text-heading: #171A2E;
+  --text-secondary: #8E93B0;
+  --text-muted: #B3B7CE;
+  --text-light: #C4C8DC;
+  
+  /* Accents & Gradients */
+  --purple-main: #5854EE;
+  --purple-dark: #4642DE;
+  --purple-light: #7E7BF8;
+  --purple-card-bg: linear-gradient(135deg, #6C66FA 0%, #544FF0 100%);
+  
+  --coral-pink: #FF4772;
+  --coral-light: #FF668B;
+  --coral-gradient: linear-gradient(135deg, #FF668B 0%, #FF4772 100%);
+  
+  --cyan-blue: #36B8FF;
+  --cyan-dark: #129BE4;
+  
+  --orange-warn: #FF9B38;
+  --green-success: #10B981;
+  
+  /* Shadows */
+  --shadow-sm: 0 2px 8px rgba(66, 71, 112, 0.04);
+  --shadow-md: 0 10px 30px rgba(66, 71, 112, 0.05), 0 2px 6px rgba(66, 71, 112, 0.02);
+  --shadow-lg: 0 16px 45px rgba(66, 71, 112, 0.08), 0 4px 12px rgba(66, 71, 112, 0.03);
+  --shadow-purple: 0 12px 30px rgba(88, 84, 238, 0.35);
+  --shadow-coral: 0 12px 30px rgba(255, 71, 114, 0.3);
+  
+  /* Radii */
+  --radius-xl: 26px;
+  --radius-lg: 20px;
+  --radius-md: 14px;
+  --radius-sm: 10px;
+  --radius-pill: 9999px;
+  
+  /* Borders */
+  --border-card: 1px solid rgba(226, 230, 243, 0.8);
+  --border-subtle: 1px solid rgba(235, 238, 247, 0.9);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-canvas);
+  color: var(--text-main);
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+button {
+  font-family: inherit;
+  outline: none;
+}
+
+input, select {
+  font-family: inherit;
+}
+
+/* Custom modern scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #D7DAEA;
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #B4B9D2;
+}
+
+/* Soft animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulseGlow {
+  0%, 100% { opacity: 0.9; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.02); }
+}
+
+@keyframes rotateSlow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes floatY {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+@keyframes scanLaser {
+  0% {
+    top: 0%;
+    opacity: 0.8;
+  }
+  50% {
+    top: 95%;
+    opacity: 1;
+  }
+  100% {
+    top: 0%;
+    opacity: 0.8;
+  }
+}

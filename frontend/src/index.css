@@ -1,0 +1,7 @@
+@import './styles/theme.css';
+
+body {
+  margin: 0;
+  background-color: var(--bg-canvas);
+  color: var(--text-main);
+}

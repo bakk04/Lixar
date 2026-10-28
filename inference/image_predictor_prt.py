@@ -102,16 +102,16 @@ class ImagePredictor:
         face_gray = cv2.cvtColor(cropped, cv2.COLOR_RGB2GRAY)
         face_brightness = (np.mean(face_gray) / 255) * 100
         
-        return cropped, conf, face_ratio, face_brightness
+        return cropped, conf, face_ratio, face_brightness, [float(x1), float(y1), float(x2), float(y2)], [int(img_w), int(img_h)], len(keypoint)
                   
         
-    def predict_img(self, img_path: str, tta_hflip: float = 0) -> float:
+    def predict_img(self, img_path: str, tta_hflip: float = 0) -> dict:
         
         try:
-            img, face_conf, face_ratio, face_brightness = self._preprocess_img(img_path)
+            cropped, face_conf, face_ratio, face_brightness, bbox, img_size, num_landmarks = self._preprocess_img(img_path)
             
             transforms = get_test_transforms(img_size=self.img_size, tta_hflip=tta_hflip)
-            img = transforms(image=img)['image']
+            img = transforms(image=cropped)['image']
         
             with torch.no_grad():
                 img = img.unsqueeze(0).to(self.device)
@@ -119,7 +119,15 @@ class ImagePredictor:
                 out = self.model(img)
                 pred = torch.sigmoid(out).item()
             
-            return {"prob": pred, "face_conf": face_conf, "face_ratio": face_ratio, "face_brightness": face_brightness}
+            return {
+                "prob": pred,
+                "face_conf": face_conf,
+                "face_ratio": face_ratio,
+                "face_brightness": face_brightness,
+                "bbox": bbox,
+                "img_size": img_size,
+                "num_landmarks": num_landmarks,
+            }
         
         except PredictorError as e:
             raise e

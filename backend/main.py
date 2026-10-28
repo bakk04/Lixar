@@ -1,0 +1,65 @@
+import os
+import sys
+from pathlib import Path
+from dotenv import load_dotenv
+
+# Ensure root directory and backend directory are in sys.path
+backend_dir = Path(__file__).resolve().parent
+root_dir = backend_dir.parent
+for p in [str(root_dir), str(backend_dir)]:
+    if p not in sys.path:
+        sys.path.insert(0, p)
+
+# ------ .env 파일 가져오기 ------
+load_dotenv()
+
+# -------- Huggingface_Hub 인증 ----------
+if os.getenv("HF_TOKEN"):
+    os.environ["HF_TOKEN"] = os.getenv("HF_TOKEN")
+else:
+    print("[Warning] HF_TOKEN is not set")
+
+from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
+from fastapi.exceptions import RequestValidationError
+from starlette.exceptions import HTTPException as StarletteHTTPException
+from fastapi.middleware.cors import CORSMiddleware
+# from starlette.middleware.sessions import SessionMiddleware
+from routes import api_router
+from utils import exc_handler, middleware, common
+
+
+# 가상 FastAPI 인스턴스 생성
+app = FastAPI(lifespan=common.lifespan)
+
+# StaticFile 등록 (이미지, 비디오 파일)
+static_dir = backend_dir / "static"
+static_dir.mkdir(parents=True, exist_ok=True)
+app.mount("/static", StaticFiles(directory=str(static_dir)), name="static")
+
+# CORS Setup for cross-origin requests
+# FrontEnd: React, BackEnd: FastAPI
+origins_str = os.getenv("CORS_ALLOWED_ORIGINS", "http://localhost:3000,http://127.0.0.1:3000")
+allowed_origins = [origin.strip() for origin in origins_str.split(",") if origin.strip()]
+app.add_middleware(CORSMiddleware,
+                   allow_origins=allowed_origins,
+                   allow_methods=["*"],
+                   allow_headers=["*"],
+                   allow_credentials=True,
+                   max_age = -1
+                   )
+
+# 세션 미들웨어 등록 - Signed Cookie 이용
+# SECRET_KEY = os.getenv("SECRET_KEY", "unique_secret_key")
+# app.add_middleware(SessionMiddleware, secret_key=SECRET_KEY, max_age=3600)
+
+# 세션 미들웨어 등록 - Redis 이용
+app.add_middleware(middleware.RedisSessionMiddleware, max_age=3600)
+
+# 라우터 등록 (View: Router, Controller: Service)
+app.include_router(api_router)
+
+# 커스텀 예외 처리: HTTPException
+app.add_exception_handler(StarletteHTTPException, exc_handler.custom_http_exception_handler)
+# 커스텀 예외 처리: RequestValidationError
+app.add_exception_handler(RequestValidationError, exc_handler.validation_exception_handler)
